@@ -139,10 +139,10 @@
   <!--[if lt IE 9]> <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script> <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script> <![endif]-->
 
   <!-- ga & ba script hoook -->
-  <link rel="canonical" href="https://byxwstar.github.io/tags/Hexo-Theme-LiveMyLife/">
+  <link rel="canonical" href="https://byxwstar.github.io/记录遇到的问题/解决上位机和下位机通信问题/">
   <title>
     
-      ByxwStar的博客
+      解决上位机和下位机通信问题 - ByxwStar的博客
     
   </title>
 <meta name="generator" content="Hexo 5.4.2"></head>
@@ -300,29 +300,7 @@
           <!-- LangSelect -->
           
           
-          <!-- LangSelect start -->
-          <!-- LangSelect -->
-<li>
-  <a id="lang-select-label"><i class="fa fa-globe"></i>
-    <span>
-      English
-    </span>
-    <select id="lang-select" data-canonical="tags/Hexo-Theme-LiveMyLife/index.html">
-      
-      
-      <option value="en"  selected >
-        English
-      </option>
-      
-      <option value="cn" >
-        简体中文
-      </option>
-      
-    </select>
-  </a>
-</li>
-
-          <!-- LangSelect end -->
+          
           
           
         </ul>
@@ -384,9 +362,9 @@
     }
 
     header.intro-header {
-       /*page*/
-        background-image: var(--intro-header-background-image-url-page);
-        /* background-image: url('/img/header_img/archive_bg2.jpg'); */
+       /*post*/
+        background-image: var(--intro-header-background-image-url-post);
+        /* background-image: url(''); */
       
     }
 
@@ -408,10 +386,40 @@
       <div class="row">
         <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
           
-          <div class="site-heading">
-            <h1>ByxwStar</h1>
-            <!--<hr class="small">-->
-            <span class="subheading">welcome</span>
+          <div class="post-heading">
+            <div class="tags">
+              
+            </div>
+            <h1>解决上位机和下位机通信问题</h1>
+            <h2 class="subheading"></h2>
+            <span class="meta">
+              Posted by ByxwStar on
+              2024-05-20
+            </span>
+
+
+            
+            <!-- WordCount start -->
+            <div class="blank_box"></div>
+            <span class="meta">
+              Estimated Reading Time <span class="post-count">3</span> Minutes
+            </span>
+            <div class="blank_box"></div>
+            <span class="meta">
+              Words <span class="post-count">1.1k</span> In Total
+            </span>
+            <div class="blank_box"></div>
+            <!-- WordCount end -->
+            
+            
+            <!-- 不蒜子统计 start -->
+            <span class="meta" id="busuanzi_container_page_pv">
+              Viewed <span id="busuanzi_value_page_pv"><i class="fa fa-spinner fa-spin"></i></span> Times
+            </span>
+            <!-- 不蒜子统计 end -->
+            
+
+
           </div>
           
         </div>
@@ -452,262 +460,265 @@
 	Friends Blog、
 	anchorjs、
 	) -->
-		<!-- Main Content -->
-<div class="container">
-  <div class="row">
+		<!-- Modify by Yu-Hsuan Yen -->
+<!-- Post Content -->
+<article>
+  <div class="container">
+    <div class="row">
+      <!-- Post Container -->
+      <div class="col-lg-8 col-lg-offset-1 col-md-10 col-md-offset-1 post-container">
+
+        <p>问题：只有上位机(使用串口助手)发送0x55，单片机接收到0x55；否则接收到其他值</p>
+<p>背景：单片机型号是C8051F121，当时是别人的板子遇到了这个问题，对整个工程项目不是很了解；我也好久没接触51了</p>
+<p>解决：</p>
+<p>由于单片机能接收到数据，排除硬件问题（反思：硬件问题主要是物理连接，包括线缆是否连接良好，接口是否对应，电源是否正常等，我这里单片机能接收到数据只能说明线缆连接正常，问题就出现在接口上）</p>
+<p>然后排查软件问题：注释无关代码，只保留串口接收数据代码。但是在实时调试的时候发现，程序没有运行，但是单片机一直向上位机发送数据，此时有个疑问：注释了单片机使用串口发送数据代码，为什么上位机一直接收到00 00 00 … ，同时使用keil的实时调试功能，发现上位机使用串口助手发送0x55，单片机接收到0x55；上位机发送0x22，单片机接收到0x37，多重复几次发现只有发送0x55的时候，单片机接收到的是正确的。</p>
+<p>现在有两个疑问：</p>
+<p>疑问1：注释了单片机串口发送数据代码，上位机一直接收到00 00 00 00，而且是不断地接收</p>
+<p>疑问2：为什么上位机发送的数据和下位机接收的数据不一样</p>
+<p>开始考虑是不是串口的设置有问题，排查没有发现什么问题，进而再次怀疑硬件问题。</p>
+<p>查看原理图，发现单片机的串口线是经过TTL转RS232芯片输出的（当时我到调试现场的时候USB转TTL模块和板子是已经连好的，并且在刚开始排查的时候有听到别人提到这个TTL转RS232芯片，但我没有注意，这里应该反思一下），把USB转TTL模块换成USB转RS232后，数据接收正常，疑问2解决，但是疑问1为什么会一直发送数据，难道是因为输入了超出范围电压吗，导致芯片异常工作？未完待续…</p>
+<p>在前几个月中也遇到过一个上位机和下位机通信的问题，当时是stm32f103，使用的也是TTL转RS232。在排查的时候，单片机串口发送数据，使用示波器能看到有数据输出。有怀疑过232转USB线的问题，但是上位机能检测到串口线，连接也没问题(当时猜测可能是线的问题，一条线几十块，没有再买一条对比)。在单片机代码上和板子焊接上反复检查了几遍，后来只能确定是线的问题后，找商家退货，更换232转USB线，问题解决。</p>
+<p>总结:</p>
+<p>物理连接检查：首先，确保上位机和下位机之间的物理连接是正确的，包括线缆是否连接良好，接口是否对应，电源是否正常等</p>
+<p>串口参数设置检查：如果通信使用串口（例如 UART），确保上位机和下位机的串口参数设置是一致的，如波特率、数据位、停止位、奇偶校验等。</p>
+<p>协议实现检查：确保上位机和下位机的通信协议的实现是正确的，包括数据包格式、命令和响应的解析等。</p>
+<p>数据流检查：在通信过程中，观察数据的流动情况，检查是否有数据发送和接收的情况，以确定通信链路是否正常。</p>
+<p>错误处理检查：检查是否存在通信过程中的错误，如校验错误、超时等，需要根据协议和硬件特性进行相应的错误处理。</p>
+<p>环境干扰排查：如果存在通信不稳定的情况，需要排查可能的环境干扰因素，如电磁干扰、静电干扰等。</p>
+<p>软件逻辑排查：如果硬件连接和通信协议实现都没有问题，可能是由于软件逻辑错误导致的通信问题，需要仔细检查上位机和下位机的软件代码逻辑，包括数据处理、状态机等。</p>
+<pre><code> 版权声明：本文为博主原创文章，遵循 CC 4.0 BY-SA 版权协议，转载请附上原文出处链接和本声明。
+</code></pre>
+
+
+        <hr>
+        <!-- Pager -->
+        <ul class="pager">
+          
+          <li class="previous">
+            <a href="/记录遇到的问题/解决在使用v4l2接口时只能拍摄32张照片的问题/" data-toggle="tooltip" data-placement="top" title="解决在使用v4l2接口时只能拍摄32张照片的问题">&larr; Previous Post</a>
+          </li>
+          
+          
+          <li class="next">
+            <a href="/cn/Hexo-Theme-LiveMyLife/" data-toggle="tooltip" data-placement="top" title="Hexo-Theme-LiveMyLife">Next Post &rarr;</a>
+          </li>
+          
+        </ul>
+
+        
+        <!-- tip start -->
+        <!-- tip -->
+<!-- tip start -->
+<div class="tip">
+  <p>
+    
+      If you like this blog or find it useful for you, you are welcome to comment on it. You are also welcome to share this blog, so that more people can participate in it. If the images used in the blog infringe your copyright, please contact the author to delete them. Thank you !
+    
+  </p>
+</div>
+<!-- tip end -->
+
+        <!-- tip end -->
+        
+
+        
+        <!-- Sharing Srtart -->
+        <!-- Social Social Share Post -->
+<!-- Docs:https://github.com/overtrue/share.js -->
+
+<div class="social-share" data-initialized="true" data-disabled="tencent ,douban ,qzone ,linkedin ,facebook ,google ,diandian" data-wechat-qrcode-helper="" align="center">
+  <ul class="list-inline text-center social-share-ul">
+    <li class="social-share-li">
+      <a target="_blank" class="social-share-icon icon-twitter">
+        <i class="fa fa-twitter fa-1x" aria-hidden="true"></i>
+      </a>
+    </li>
+    <li class="social-share-li">
+      <a class="social-share-icon icon-wechat">
+        <i class="fa fa-weixin fa-1x" aria-hidden="true"></i>
+      </a>
+    </li>
+    <li class="social-share-li">
+      <a target="_blank" class="social-share-icon icon-weibo">
+        <i class="fa fa-weibo fa-1x" aria-hidden="true"></i>
+      </a>
+    </li>
+    <li class="social-share-li">
+      <a target="_blank" class="social-share-icon icon-qq">
+        <i class="fa fa-qq fa-1x" aria-hidden="true"></i>
+      </a>
+    </li>
+    <li class="social-share-li">
+      <a target="_blank" class="social-share-icon" href="mailto:?subject=解决上位机和下位机通信问题&body=Hi,I found this website and thought you might like it https://byxwstar.github.io/记录遇到的问题/解决上位机和下位机通信问题/">
+        <i class="fa fa-envelope fa-1x" aria-hidden="true"></i>
+      </a>
+    </li>
+  </ul>
+</div>
+
+<!-- css & js -->
+<!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/social-share.js/1.0.16/css/share.min.css"> -->
+<script defer="defer" async="true" src="https://cdnjs.cloudflare.com/ajax/libs/social-share.js/1.0.16/js/social-share.min.js"></script>
+
+        <!-- Sharing End -->
+        
+        <hr>
+
+        <!-- comments start -->
+        <!-- 1. gitalk comment -->
+
+  <!-- gitalk start -->
+  <!-- Docs:https://github.com/gitalk/gitalk/blob/master/readme-cn.md -->
+
+  <div id="gitalk-container"></div>
+
+  
+    <!-- <script src="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.js"></script> -->
+    <script src="/js/comment/gitalk.js"></script>
+  
+
+  <script>
+    var gitalk = new Gitalk({
+      clientID: '',
+      clientSecret: '',
+      repo: '',
+      owner: '',
+      admin: '',
+      id: 'Mon May 20 2024 20:11:14 GMT+0800', // Ensure uniqueness and length less than 50
+      distractionFreeMode: false, // Facebook-like distraction free mode
+      perPage: 10,
+      pagerDirection: 'last',
+      createIssueManually: false,
+      language: 'en',
+      proxy: 'https://cors-anywhere.azm.workers.dev/https://github.com/login/oauth/access_token'
+    });
+    gitalk.render('gitalk-container');
+
+    var gtFolded = () => {
+      setTimeout(function () {
+        let markdownBody = document.getElementsByClassName("markdown-body");
+        let list = Array.from(markdownBody);
+        list.forEach(item => {
+          if (item.clientHeight > 250) {
+            item.classList.add('gt-comment-body-folded');
+            item.style.maxHeight = '250px';
+            item.title = 'Click to Expand';
+            item.onclick = function () {
+              item.classList.remove('gt-comment-body-folded');
+              item.style.maxHeight = '';
+              item.title = '';
+              item.onclick = null;
+            };
+          }
+        })
+      }, 800);
+    }
+  </script>
+
+  <!-- gitalk end -->
+
+
+<!-- 2. gitment comment -->
+
+
+<!-- 3. disqus comment -->
+
+
+        <!-- comments end -->
+        <hr>
+
+      </div>
+
+      <!-- Catalog: Tabe of Content -->
+      <!-- Table of Contents -->
+
+    
+      <aside id="sidebar">
+        <div id="toc" class="toc-article">
+        <strong class="toc-title">Contents</strong>
+        
+          <ol class="nav">none</ol>
+        
+        </div>
+      </aside>
     
 
-    <!-- USE SIDEBAR -->
-    <!-- Post Container -->
-    <div class="
+
+
+      <!-- Sidebar Container -->
+      <div class="
                 col-lg-8 col-lg-offset-1
-                col-md-8 col-md-offset-1
-                col-sm-12
-                col-xs-12
-                post-container
-            ">
+                col-md-10 col-md-offset-1
+                sidebar-container">
 
-      <!-- Main Content -->
-<div class="container">
-  <div class="row">
-    <div class="col-lg-8 col-lg-offset-0 col-md-10 col-md-offset-1">
-      <!-- 归档列表 -->
-
-      
-
-      <!-- 归档列表 -->
-      
-      <div class="one-tag-list">
-        <span class="fa fa-calendar-times-o listing-seperator" id="2024">
-          <span class="tag-text">2024</span>
-        </span>
-        <ul>
-          
-          <li>
-            05-20
-            <i class="fa fa-angle-double-right" aria-hidden="true"></i>
-            <a href="/记录遇到的问题/解决上位机和下位机通信问题/" style="color: #0085a1">
-              <span>
-                解决上位机和下位机通信问题
-                
-                -- 记录遇到的问题
-                
-              </span>
-            </a>
-          </li>
-          
-          <li>
-            05-20
-            <i class="fa fa-angle-double-right" aria-hidden="true"></i>
-            <a href="/记录遇到的问题/解决在使用v4l2接口时只能拍摄32张照片的问题/" style="color: #0085a1">
-              <span>
-                解决在使用v4l2接口时只能拍摄32张照片的问题
-                
-                -- 记录遇到的问题
-                
-              </span>
-            </a>
-          </li>
-          
-        </ul>
-      </div>
-      
-      <div class="one-tag-list">
-        <span class="fa fa-calendar-times-o listing-seperator" id="2020">
-          <span class="tag-text">2020</span>
-        </span>
-        <ul>
-          
-          <li>
-            04-17
-            <i class="fa fa-angle-double-right" aria-hidden="true"></i>
-            <a href="/en/Hexo-Theme-LiveMyLife/" style="color: #0085a1">
-              <span>
-                Hexo-Theme-LiveMyLife
-                
-              </span>
-            </a>
-          </li>
-          
-          <li>
-            04-17
-            <i class="fa fa-angle-double-right" aria-hidden="true"></i>
-            <a href="/cn/Hexo-Theme-LiveMyLife/" style="color: #0085a1">
-              <span>
-                Hexo-Theme-LiveMyLife
-                
-                -- cn
-                
-              </span>
-            </a>
-          </li>
-          
-        </ul>
-      </div>
-      
-    </div>
-  </div>
-</div>
-
-
-      <!-- 如果开启评论功能 -->
-      
-    </div>
-
-    <!-- Sidebar Container -->
-<div class="
-    col-lg-3 col-lg-offset-0
-    col-md-3 col-md-offset-0
-    col-sm-12
-    col-xs-12
-    sidebar-container
-">
-    
-        <!-- Visitors -->
-<h5><a href="/">VISITORS</a></h5>
-
-<div class="widget">
-  <span>
-    Viewed <b><i><span id="busuanzi_value_site_pv"><i class="fa fa-spinner fa-spin"></i></span></i></b> Times
-  </span>
-  <br />
-  <span>
-    <b><i><span id="busuanzi_value_site_uv"><i class="fa fa-spinner fa-spin"></i></span></i></b> Visitors In Total
-  </span>
-</div>
-
-
-        <hr>
-    
         <!-- Featured Tags -->
+        
+        <section>
+          <!-- no hr -->
+          <h5>
+            <a href="/tags/">FEATURED TAGS</a>
+          </h5>
+          <div class="tags">
+            
+          </div>
+        </section>
+        
 
-<section>
-  <h5><a href="/tags/">FEATURED TAGS</a></h5>
-  <div class="tags">
-    
-    
-    <a href="/tags/#Hexo-Theme-LiveMyLife" title="Hexo-Theme-LiveMyLife" rel="2">Hexo-Theme-LiveMyLife</a>
-    
-    
-  </div>
-</section>
-
-
-        <hr>
-    
-        <!-- Short About -->
-<section class="visible-md visible-lg">
-  <h5><a href="/about/">ABOUT ME</a></h5>
-  <div class="short-about">
-
-    
-
-    
-    <p>I am a sophomore majoring in electronic Information Engineering at Hubei University of Technology.A programming enthusiast who is learning C, C++, Linux</p>
-    
-
-    <!-- SNS Link -->
-    <ul class="list-inline">
-      
-
-      
-      <li>
-        <a target="_blank" href="https://github.com/ByxwStar">
-          <span class="fa-stack fa-lg">
-            <i class="fa fa-circle fa-stack-2x"></i>
-            <i class="fa fa-github fa-stack-1x fa-inverse"></i>
-          </span>
-        </a>
-      </li>
-      
-
-      
-
-      
-
-      
-
-      
-
-      
-
-      
-
-    </ul>
-  </div>
-</section>
-
-        <hr>
-    
-        <!-- RECENT POSTS -->
-
-<h5><a href="/">RECENT POSTS</a></h5>
-<div class="widget">
-  <ul>
-    
-    <a href="../../%E8%AE%B0%E5%BD%95%E9%81%87%E5%88%B0%E7%9A%84%E9%97%AE%E9%A2%98/%E8%A7%A3%E5%86%B3%E5%9C%A8%E4%BD%BF%E7%94%A8v4l2%E6%8E%A5%E5%8F%A3%E6%97%B6%E5%8F%AA%E8%83%BD%E6%8B%8D%E6%91%8432%E5%BC%A0%E7%85%A7%E7%89%87%E7%9A%84%E9%97%AE%E9%A2%98/">
-      <li>解决在使用v4l2接口时只能拍摄32张照片的问题</li>
-    </a>
-    
-    <a href="../../%E8%AE%B0%E5%BD%95%E9%81%87%E5%88%B0%E7%9A%84%E9%97%AE%E9%A2%98/%E8%A7%A3%E5%86%B3%E4%B8%8A%E4%BD%8D%E6%9C%BA%E5%92%8C%E4%B8%8B%E4%BD%8D%E6%9C%BA%E9%80%9A%E4%BF%A1%E9%97%AE%E9%A2%98/">
-      <li>解决上位机和下位机通信问题</li>
-    </a>
-    
-    <a href="../../cn/Hexo-Theme-LiveMyLife/">
-      <li>Hexo-Theme-LiveMyLife</li>
-    </a>
-    
-    <a href="../../en/Hexo-Theme-LiveMyLife/">
-      <li>Hexo-Theme-LiveMyLife</li>
-    </a>
-    
-  </ul>
-</div>
-
-
-        <hr>
-    
         <!-- Friends Blog -->
-
-
-        <hr>
-    
-        <!-- Archives -->
-
-<h5><a href="/archives/">archives</a></h5>
-<div class="widget">
-  <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="../../archives/2024/05/">May 2024</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="../../archives/2020/04/">April 2020</a><span class="archive-list-count">2</span></li></ul>
-</div>
-
-
-        <hr>
-    
-        <!-- Categories -->
-
-<h5><a href="/categories/">categories</a></h5>
-<div class="widget">
-  <ul>
-    
-    <a href="/categories/#Hexo-Theme-LiveMyLife">
-      <li>Hexo-Theme-LiveMyLife</li>
-    </a>
-    
-    <a href="/categories/#记录解决的问题">
-      <li>记录解决的问题</li>
-    </a>
-    
-  </ul>
-</div>
-
-
-        <hr>
-    
-</div>
-
-
-    
+        
+      </div>
+    </div>
   </div>
-</div>
+</article>
+
+
+
+<!-- anchorjs start -->
+<!-- async load function -->
+<!-- anchor-js, Doc:http://bryanbraun.github.io/anchorjs/ -->
+<script type="text/javascript">
+  // async load function
+  function async (u, c) {
+    var d = document,
+      t = 'script',
+      o = d.createElement(t),
+      s = d.getElementsByTagName(t)[0];
+    o.src = u;
+    if (c) {
+      o.addEventListener('load', function(e) {
+        c(null, e);
+      }, false);
+    }
+    s.parentNode.insertBefore(o, s);
+  };
+</script>
+<script type="text/javascript">
+  //anchor-js, Doc:http://bryanbraun.github.io/anchorjs/
+  async ("https://cdn.bootcss.com/anchor-js/1.1.1/anchor.min.js", function() {
+    anchors.options = {
+      visible: 'hover',
+      placement: 'left',
+      // icon: 'ℬ'
+      icon: '❡'
+    };
+    anchors.add().remove('.intro-header h1').remove('.subheading').remove('.sidebar-container h5');
+  });
+</script>
+<style>
+  /* place left on bigger screen */
+  @media all and (min-width: 800px) {
+    .anchorjs-link {
+      position: absolute;
+      left: -0.75em;
+      font-size: 1.1em;
+      margin-top: -0.1em;
+    }
+  }
+</style>
+
+<!-- anchorjs end -->
+
 
 
 		<!-- Footer (contains ThemeColor、viewer) -->
